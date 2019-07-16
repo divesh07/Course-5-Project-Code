@@ -1,11 +1,14 @@
 package com.upgrad.quora.api.controller;
 
 
+import com.upgrad.quora.api.model.SigninResponse;
 import com.upgrad.quora.api.model.SignupUserRequest;
 import com.upgrad.quora.api.model.SignupUserResponse;
+import com.upgrad.quora.service.business.AuthenticationService;
 import com.upgrad.quora.service.business.SignupBusinessService;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
+import com.upgrad.quora.service.exception.AuthenticationFailedException;
 import com.upgrad.quora.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +29,9 @@ public class UserController {
 
     @Autowired
     private SignupBusinessService signupBusinessService;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @RequestMapping(method = RequestMethod.POST, path = "/user/signup", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignupUserResponse> userSignup(final SignupUserRequest signupUserRequest) throws SignUpRestrictedException {
@@ -52,9 +58,9 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/user/signin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<SignupUserResponse> userSignin(@RequestHeader("authorization") final String authorization)  {
-
-        byte[] decode = Base64.getDecoder().decode(authorization);
+    public ResponseEntity<SigninResponse> userSignin(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
+        String encodedText = authorization.split("Basic ")[1];
+        byte[] decode = Base64.getDecoder().decode(encodedText);
         String decodedText = new String(decode);
         String[] decodedArray = decodedText.split(":");
 
@@ -62,14 +68,10 @@ public class UserController {
 
         UserEntity user = userAuthToken.getUser();
 
-        AuthorizedUserResponse authorizedUserResponse = new AuthorizedUserResponse().id(UUID.fromString(user.getUuid()))
-                .firstName(user.getFirstName()).lastName(user.getLastName()).emailAddress(user.getEmail()).mobilePhone(user.getMobilePhone())
-                .lastLoginTime(user.getLastLoginAt()).role(user.getRole());
+        SigninResponse signinResponse = new SigninResponse().id(user.getUuid())
+                .message("SIGNED IN SUCCESSFULLY");
         HttpHeaders headers = new HttpHeaders();
         headers.add("access-token", userAuthToken.getAccessToken());
-        return new ResponseEntity<AuthorizedUserResponse>(authorizedUserResponse, headers, HttpStatus.OK);
+        return new ResponseEntity<SigninResponse>(signinResponse, headers, HttpStatus.OK);
     }
-
-
-
 }
