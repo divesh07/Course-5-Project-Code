@@ -77,11 +77,13 @@ public class UserEntity implements Serializable {
     @Column(name = "LAST_LOGIN_AT")
     private ZonedDateTime lastLoginAt;
 
+    @Column(name = "LOGOUT_AT")
+    private ZonedDateTime logoutAt;
+
     @Column(name = "SALT")
     @NotNull
     @Size(max = 200)
     private String salt;
-
 
     public long getId() {
         return id;
@@ -193,6 +195,14 @@ public class UserEntity implements Serializable {
 
     public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
+    }
+
+    public ZonedDateTime getLogoutAt() {
+        return logoutAt;
+    }
+
+    public void setLogoutAt(ZonedDateTime logoutAt) {
+        this.logoutAt = logoutAt;
     }
 
     @Override
