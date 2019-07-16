@@ -28,7 +28,7 @@ public class CommonBusinessService {
         }
 
         // Check the user log out time , if the value is not null then the user has signed out
-        if ( userAuthTokenEntity.getLastLoginAt() !=null && userAuthTokenEntity.getLogoutAt() != null){
+        if ( userAuthTokenEntity.getLoginAt() !=null && userAuthTokenEntity.getLogoutAt() != null){
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details.");
         }
 

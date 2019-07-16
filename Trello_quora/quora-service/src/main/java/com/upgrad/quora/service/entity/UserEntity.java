@@ -27,53 +27,55 @@ public class UserEntity implements Serializable {
     private long id;
 
     @Column(name = "UUID")
-    @Size(max = 64)
+    @Size(max = 200)
     private String uuid;
 
     @Column(name = "ROLE")
+    @Size(max = 30)
     private String role;
 
     @Column(name = "EMAIL_ADDRESS")
     @NotNull
-    @Size(max = 200)
+    @Size(max = 50)
     private String emailAddress;
 
     @Column(name = "PASSWORD")
+    @Size(max = 255)
     private String password;
 
     @Column(name = "FIRST_NAME")
     @NotNull
-    @Size(max = 200)
+    @Size(max = 30)
     private String firstName;
 
     @Column(name = "LAST_NAME")
     @NotNull
-    @Size(max = 200)
+    @Size(max = 30)
     private String lastName;
 
     @Column(name = "USER_NAME")
     @NotNull
-    @Size(max = 200)
+    @Size(max = 30)
     private String userName;
 
     @Column(name = "CONTACT_NUMBER")
     @NotNull
-    @Size(max = 50)
+    @Size(max = 30)
     private String contactNumber;
 
     @Column(name = "COUNTRY")
     @NotNull
-    @Size(max = 200)
+    @Size(max = 30)
     private String country;
 
     @Column(name = "ABOUT_ME")
     @NotNull
-    @Size(max = 200)
+    @Size(max = 50)
     private String aboutMe;
 
     @Column(name = "DOB")
     @NotNull
-    @Size(max = 200)
+    @Size(max = 30)
     private String dob;
 
     @Column(name = "SALT")

@@ -14,11 +14,12 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "USER_AUTH", schema = "discussionForum")
+@Table(name = "QUESTION", schema = "discussionForum")
 @NamedQueries({
-        @NamedQuery(name = "userAuthTokenByAccessToken", query = "select ut from UserAuthTokenEntity ut where ut.accessToken =:accessToken")
+        @NamedQuery(name = "questionById", query = "select ut from QuestionEntity ut where ut.uuid =:uuid")
 })
-public class UserAuthTokenEntity implements Serializable {
+
+public class QuestionEntity implements Serializable {
 
     @Id
     @Column(name = "ID")
@@ -34,22 +35,14 @@ public class UserAuthTokenEntity implements Serializable {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private UserEntity user;
 
-    @Column(name = "ACCESS_TOKEN")
+    @Column(name = "CONTENT")
     @NotNull
     @Size(max = 500)
-    private String accessToken;
+    private String content;
 
-    @Column(name = "LOGIN_AT")
+    @Column(name = "DATE")
     @NotNull
-    private ZonedDateTime loginAt;
-
-    @Column(name = "EXPIRES_AT")
-    @NotNull
-    private ZonedDateTime expiresAt;
-
-    @Column(name = "LOGOUT_AT")
-    private ZonedDateTime logoutAt;
-
+    private ZonedDateTime date;
 
     public long getId() {
         return id;
@@ -57,6 +50,14 @@ public class UserAuthTokenEntity implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public UserEntity getUser() {
@@ -67,44 +68,20 @@ public class UserAuthTokenEntity implements Serializable {
         this.user = user;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public String getContent() {
+        return content;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public ZonedDateTime getLoginAt() {
-        return loginAt;
+    public ZonedDateTime getDate() {
+        return date;
     }
 
-    public void setLoginAt(ZonedDateTime loginAt) {
-        this.loginAt = loginAt;
-    }
-
-    public ZonedDateTime getExpiresAt() {
-        return expiresAt;
-    }
-
-    public void setExpiresAt(ZonedDateTime expiresAt) {
-        this.expiresAt = expiresAt;
-    }
-
-    public ZonedDateTime getLogoutAt() {
-        return logoutAt;
-    }
-
-    public void setLogoutAt(ZonedDateTime logoutAt) {
-        this.logoutAt = logoutAt;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setDate(ZonedDateTime date) {
+        this.date = date;
     }
 
     @Override
