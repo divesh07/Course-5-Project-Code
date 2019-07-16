@@ -17,6 +17,7 @@ import java.time.ZonedDateTime;
         @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.emailAddress = :emailAddress"),
         @NamedQuery(name = "userByName", query = "select u from UserEntity u where u.userName = :userName"),
         @NamedQuery(name = "userById", query = "select u from UserEntity u where u.uuid = :uuid"),
+        @NamedQuery(name = "deleteUserById", query = "delete from UserEntity u where u.uuid = :uuid")
 })
 public class UserEntity implements Serializable {
 
@@ -75,12 +76,6 @@ public class UserEntity implements Serializable {
     @Size(max = 200)
     private String dob;
 
-    @Column(name = "LAST_LOGIN_AT")
-    private ZonedDateTime lastLoginAt;
-
-    @Column(name = "LOGOUT_AT")
-    private ZonedDateTime logoutAt;
-
     @Column(name = "SALT")
     @NotNull
     @Size(max = 200)
@@ -132,14 +127,6 @@ public class UserEntity implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public ZonedDateTime getLastLoginAt() {
-        return lastLoginAt;
-    }
-
-    public void setLastLoginAt(ZonedDateTime lastLoginAt) {
-        this.lastLoginAt = lastLoginAt;
     }
 
     public String getSalt() {
@@ -196,14 +183,6 @@ public class UserEntity implements Serializable {
 
     public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
-    }
-
-    public ZonedDateTime getLogoutAt() {
-        return logoutAt;
-    }
-
-    public void setLogoutAt(ZonedDateTime logoutAt) {
-        this.logoutAt = logoutAt;
     }
 
     @Override

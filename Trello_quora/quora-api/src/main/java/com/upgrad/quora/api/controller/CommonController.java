@@ -1,6 +1,5 @@
 package com.upgrad.quora.api.controller;
 
-
 import com.upgrad.quora.api.model.UserDetailsResponse;
 import com.upgrad.quora.service.business.CommonBusinessService;
 import com.upgrad.quora.service.entity.UserEntity;
@@ -20,9 +19,9 @@ public class CommonController {
     private CommonBusinessService commonBusinessService;
 
     @RequestMapping(method = RequestMethod.GET, path = "/userprofile/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UserDetailsResponse> getUserProfile(@PathVariable("id") final String userUuid, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, UserNotFoundException {
+    public ResponseEntity<UserDetailsResponse> getUserProfile(@PathVariable("userId") final String userUuid, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, UserNotFoundException {
 
-        final UserEntity userEntity = commonBusinessService.getUser(authorization);
+        final UserEntity userEntity = commonBusinessService.getUser(userUuid, authorization);
 
         UserDetailsResponse userDetailsResponse = new UserDetailsResponse().firstName(userEntity.getFirstName())
                 .lastName(userEntity.getLastName())

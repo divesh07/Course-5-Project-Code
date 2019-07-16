@@ -4,6 +4,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,8 +25,9 @@ public class UserAuthTokenEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserEntity user;
 
     @Column(name = "ACCESS_TOKEN")
@@ -42,6 +45,9 @@ public class UserAuthTokenEntity implements Serializable {
 
     @Column(name = "LOGOUT_AT")
     private ZonedDateTime logoutAt;
+
+    @Column(name = "LAST_LOGIN_AT")
+    private ZonedDateTime lastLoginAt;
 
 
     public long getId() {
@@ -90,6 +96,14 @@ public class UserAuthTokenEntity implements Serializable {
 
     public void setLogoutAt(ZonedDateTime logoutAt) {
         this.logoutAt = logoutAt;
+    }
+
+    public ZonedDateTime getLastLoginAt() {
+        return lastLoginAt;
+    }
+
+    public void setLastLoginAt(ZonedDateTime lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.upgrad.quora.api.controller;
 
-
 import com.upgrad.quora.api.model.SigninResponse;
 import com.upgrad.quora.api.model.SignoutResponse;
 import com.upgrad.quora.api.model.SignupUserRequest;
@@ -55,7 +54,6 @@ public class UserController {
         userEntity.setAboutMe(signupUserRequest.getAboutMe());
         userEntity.setDob(signupUserRequest.getDob());
         userEntity.setContactNumber(signupUserRequest.getContactNumber());
-        userEntity.setLogoutAt(null);
         userEntity.setSalt("1234abc");
         userEntity.setRole("nonadmin");
 
@@ -87,6 +85,6 @@ public class UserController {
         UserEntity user = userAuthToken.getUser();
 
         SignoutResponse signoutResponse = new SignoutResponse().id(user.getUuid()).message("SIGNED OUT SUCCESSFULLY");
-        return new ResponseEntity<SignoutResponse>(signoutResponse,HttpStatus.OK);
+        return new ResponseEntity<SignoutResponse>(signoutResponse, HttpStatus.OK);
     }
 }

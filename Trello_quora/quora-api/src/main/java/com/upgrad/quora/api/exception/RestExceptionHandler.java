@@ -60,4 +60,13 @@ public class RestExceptionHandler {
         );
     }
 
+    @ExceptionHandler(DeleteFailedException.class)
+    public ResponseEntity<ErrorResponse> deleteFailedException(DeleteFailedException exc, WebRequest request) {
+        return new ResponseEntity<ErrorResponse>(
+                new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.NOT_FOUND
+        );
+    }
+
+
+
 }
