@@ -28,9 +28,13 @@ public class SignOutBusinessService {
 
         UserEntity userEntity = userAuthTokenEntity.getUser();
         userEntity.setLogoutAt(ZonedDateTime.now());
-        userAuthTokenEntity.setAccessToken("");
+        // Added this to clear the jwt token so that the user should not call any other API after logout
+        //userAuthTokenEntity.setAccessToken("");
         userDao.updateUser(userEntity);
-        userDao.updateAuthToken(userAuthTokenEntity);
+
+        // A new check is added which checks if the user log out is set , if true then user wont be able to call other API
+        // And hence removing this - clearing of user jwt
+        //userDao.updateAuthToken(userAuthTokenEntity);
         return userAuthTokenEntity;
     }
 }

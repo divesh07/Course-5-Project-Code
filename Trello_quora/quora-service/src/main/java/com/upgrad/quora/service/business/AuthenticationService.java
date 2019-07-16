@@ -39,11 +39,11 @@ public class AuthenticationService {
 
             userAuthTokenEntity.setLoginAt(now);
             userAuthTokenEntity.setExpiresAt(expiresAt);
-
+            // Setting log out value to null to depict that the user is not logged out.
+            userAuthTokenEntity.setLogoutAt(null);
             userDao.createAuthToken(userAuthTokenEntity);
 
             userDao.updateUser(userEntity);
-            userEntity.setLastLoginAt(now);
             return userAuthTokenEntity;
         } else {
             throw new AuthenticationFailedException("ATH-002", "Password failed");

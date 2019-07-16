@@ -55,6 +55,7 @@ public class UserController {
         userEntity.setAboutMe(signupUserRequest.getAboutMe());
         userEntity.setDob(signupUserRequest.getDob());
         userEntity.setContactNumber(signupUserRequest.getContactNumber());
+        userEntity.setLogoutAt(null);
         userEntity.setSalt("1234abc");
         userEntity.setRole("nonadmin");
 
@@ -71,7 +72,6 @@ public class UserController {
         String[] decodedArray = decodedText.split(":");
 
         UserAuthTokenEntity userAuthToken = authenticationService.authenticate(decodedArray[0], decodedArray[1]);
-
         UserEntity user = userAuthToken.getUser();
 
         SigninResponse signinResponse = new SigninResponse().id(user.getUuid())
