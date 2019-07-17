@@ -1,5 +1,6 @@
 package com.upgrad.quora.service.business;
 
+import com.upgrad.quora.service.dao.UserAuthTokenDao;
 import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
@@ -19,6 +20,9 @@ public class AuthenticationService {
 
     @Autowired
     private PasswordCryptographyProvider CryptographyProvider;
+
+    @Autowired
+    private UserAuthTokenDao userAuthTokenDao;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public UserAuthTokenEntity authenticate(final String username, final String password) throws AuthenticationFailedException {
@@ -41,7 +45,7 @@ public class AuthenticationService {
             userAuthTokenEntity.setExpiresAt(expiresAt);
             // Setting log out value to null to depict that the user is not logged out.
             userAuthTokenEntity.setLogoutAt(null);
-            userDao.createAuthToken(userAuthTokenEntity);
+            userAuthTokenDao.createAuthToken(userAuthTokenEntity);
 
             userDao.updateUser(userEntity);
             return userAuthTokenEntity;
