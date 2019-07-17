@@ -66,13 +66,19 @@ public class QuestionBusinessService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity editQuestionContent(final String authorization,final String questionId,final String content) throws AuthorizationFailedException,InvalidQuestionException{
-        QuestionEntity questionEntity=getQuestion(authorization,questionId);
+        QuestionEntity questionEntity=getQuestion(authorization,questionId,"edit");
         questionEntity.setContent(content);
         return questionDao.editQuestion(questionEntity);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public QuestionEntity getQuestion(final String authorization,final String questionId) throws AuthorizationFailedException,InvalidQuestionException{
+    public QuestionEntity deleteQuestion(final String authorization,final String questionId) throws AuthorizationFailedException,InvalidQuestionException{
+        QuestionEntity questionEntity=getQuestion(authorization,questionId,"delete");
+        return questionDao.deleteQuestion(questionEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public QuestionEntity getQuestion(final String authorization,final String questionId,String type) throws AuthorizationFailedException,InvalidQuestionException{
         UserAuthTokenEntity userAuthTokenEntity=commonBusinessService.getUser(authorization);
         if(userAuthTokenEntity==null){
             throw new AuthorizationFailedException("ATHR-001","User has not signed in");
@@ -81,17 +87,20 @@ public class QuestionBusinessService {
             ZonedDateTime logoutTime=userAuthTokenEntity.getLogoutAt();
             ZonedDateTime nowTime=ZonedDateTime.now();
             if(nowTime.compareTo(expiryTime)>0)
-                throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to edit the question");
+                throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to "+type+" the question");
             if(logoutTime!=null){
                 if(nowTime.compareTo(logoutTime)>0)
-                    throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to edit the question");
+                    throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to "+type+" the question");
             }
             QuestionEntity questionEntity=questionDao.getQuestion(questionId);
             if(questionEntity!=null) {
                 UserEntity signedUser = userAuthTokenEntity.getUser();
                 UserEntity owner = questionEntity.getUser();
-                if (!owner.equals(signedUser)) {
-                    throw new AuthorizationFailedException("ATHR-003","Only the question owner can edit the question");
+                if (!owner.getUuid().equals(signedUser.getUuid())) {
+                    if(type.equals("delete"))
+                        throw new AuthorizationFailedException("ATHR-003","Only the question owner or admin can delete the question");
+                    else
+                        throw new AuthorizationFailedException("ATHR-003","Only the question owner can "+type+" the question");
                 }
                 return questionEntity;
             }else
