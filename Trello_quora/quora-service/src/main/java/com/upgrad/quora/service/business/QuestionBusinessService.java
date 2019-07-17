@@ -6,6 +6,7 @@ import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
+import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -62,6 +63,33 @@ public class QuestionBusinessService {
             return questionDao.getAllQuestions(userAuthTokenEntity.getUser());
         }
 
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public QuestionEntity getAllQuestionsByUser(final String authorization,final String userId) throws AuthorizationFailedException,UserNotFoundException{
+        UserAuthTokenEntity userAuthTokenEntity=commonBusinessService.getUser(authorization);
+        if(userAuthTokenEntity==null){
+            throw new AuthorizationFailedException("ATHR-001","User has not signed in");
+        }else {
+            ZonedDateTime expiryTime=userAuthTokenEntity.getExpiresAt();
+            ZonedDateTime logoutTime=userAuthTokenEntity.getLogoutAt();
+            ZonedDateTime nowTime=ZonedDateTime.now();
+            if(nowTime.compareTo(expiryTime)>0)
+                throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to get all questions posted by a specific user");
+            if(logoutTime!=null){
+                if(nowTime.compareTo(logoutTime)>0)
+                    throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to get all questions posted by a specific users");
+            }
+            UserEntity userEntity=userAuthTokenEntity.getUser();
+            QuestionEntity questionEntity=questionDao.getAllQuestions(userAuthTokenEntity.getUser());
+            if(questionEntity!=null) {
+                if (userEntity.getUuid().equals(userId))
+                    return questionEntity;
+                else
+                    throw new UserNotFoundException("USR-001", "User with entered uuid whose question details are to be seen does not exist");
+            }else
+                throw new UserNotFoundException("USR-001", "User with entered uuid whose question details are to be seen does not exist");
+        }
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

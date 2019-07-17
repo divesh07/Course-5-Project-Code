@@ -44,7 +44,6 @@ public class CommonBusinessService {
         return userAuthTokenEntity;
     }
 
-
 }
 
 
