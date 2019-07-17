@@ -26,5 +26,10 @@ public class QuestionBusinessService {
         return questionDao.createQuestion(questionEntity);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
+    public QuestionEntity getAllQuestions(final String authorization) throws AuthorizationFailedException{
+        UserEntity userEntity=commonBusinessService.getUser(authorization);
+        return questionDao.getAllQuestions(userEntity);
+    }
 
 }
