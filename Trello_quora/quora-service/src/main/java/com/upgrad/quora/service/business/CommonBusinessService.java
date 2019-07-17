@@ -4,14 +4,11 @@ import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
-import com.upgrad.quora.service.exception.SignOutRestrictedException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.ZonedDateTime;
 
 @Service
 public class CommonBusinessService {
@@ -42,22 +39,9 @@ public class CommonBusinessService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public UserEntity getUser(final String authorization) throws AuthorizationFailedException {
+    public UserAuthTokenEntity getUser(final String authorization){
         UserAuthTokenEntity userAuthTokenEntity=userDao.getUserAuthToken(authorization);
-        if(userAuthTokenEntity==null){
-            throw new AuthorizationFailedException("ATHR-001","User has not signed in");
-        }else {
-            ZonedDateTime expiryTime=userAuthTokenEntity.getExpiresAt();
-            ZonedDateTime logoutTime=userAuthTokenEntity.getLogoutAt();
-            ZonedDateTime nowTime=ZonedDateTime.now();
-            if(nowTime.compareTo(expiryTime)>0)
-                throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to post a question");
-            if(logoutTime!=null){
-                if(nowTime.compareTo(logoutTime)>0)
-                    throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to post a question");
-            }
-            return userAuthTokenEntity.getUser();
-        }
+        return userAuthTokenEntity;
     }
 
 

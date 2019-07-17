@@ -1,19 +1,15 @@
 package com.upgrad.quora.api.controller;
 
-import com.upgrad.quora.api.model.QuestionDetailsResponse;
-import com.upgrad.quora.api.model.QuestionRequest;
-import com.upgrad.quora.api.model.QuestionResponse;
+import com.upgrad.quora.api.model.*;
 import com.upgrad.quora.service.business.QuestionBusinessService;
 import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
+import com.upgrad.quora.service.exception.InvalidQuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -41,5 +37,13 @@ public class QuestionController {
         QuestionEntity questionEntity=questionBusinessService.getAllQuestions(authorization);
         final QuestionDetailsResponse questionDetailsResponse=new QuestionDetailsResponse().content(questionEntity.getContent()).id(questionEntity.getUuid());
         return new ResponseEntity<QuestionDetailsResponse>(questionDetailsResponse,HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT,path = "/question/edit/{questionId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<QuestionEditResponse> editQuestionContent(@RequestHeader("authorization")final String authorization, @PathVariable("questionId")final String questionId, final QuestionEditRequest questionEditRequest) throws AuthorizationFailedException, InvalidQuestionException {
+        String content=questionEditRequest.getContent();
+        QuestionEntity questionEntity=questionBusinessService.editQuestionContent(authorization,questionId,content);
+        final QuestionEditResponse questionEditResponse=new QuestionEditResponse().id(questionEntity.getUuid()).status("QUESTION EDITED");
+        return new ResponseEntity<QuestionEditResponse>(questionEditResponse,HttpStatus.OK);
     }
 }
