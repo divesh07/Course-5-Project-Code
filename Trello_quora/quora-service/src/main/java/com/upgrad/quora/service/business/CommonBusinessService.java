@@ -28,7 +28,7 @@ public class CommonBusinessService {
         }
 
         // Check the user log out time , if the value is not null then the user has signed out
-        if ( userAuthTokenEntity.getLastLoginAt() !=null && userAuthTokenEntity.getLogoutAt() != null){
+        if (userAuthTokenEntity.getLogoutAt() != null){
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details.");
         }
 
@@ -40,6 +40,27 @@ public class CommonBusinessService {
 
         return userEntity;
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public UserEntity getUser(final String authorization) throws AuthorizationFailedException {
+        UserAuthTokenEntity userAuthTokenEntity=userDao.getUserAuthToken(authorization);
+        if(userAuthTokenEntity==null){
+            throw new AuthorizationFailedException("ATHR-001","User has not signed in");
+        }else {
+            ZonedDateTime expiryTime=userAuthTokenEntity.getExpiresAt();
+            ZonedDateTime logoutTime=userAuthTokenEntity.getLogoutAt();
+            ZonedDateTime nowTime=ZonedDateTime.now();
+            if(nowTime.compareTo(expiryTime)>0)
+                throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to post a question");
+            if(logoutTime!=null){
+                if(nowTime.compareTo(logoutTime)>0)
+                    throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to post a question");
+            }
+            return userAuthTokenEntity.getUser();
+        }
+    }
+
+
 }
 
 

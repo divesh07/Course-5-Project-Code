@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "USER_AUTH_TOKENS", schema = "discussionForum")
+@Table(name = "USER_AUTH",schema = "public")
 @NamedQueries({
         @NamedQuery(name = "userAuthTokenByAccessToken", query = "select ut from UserAuthTokenEntity ut where ut.accessToken =:accessToken")
 })
@@ -45,10 +45,6 @@ public class UserAuthTokenEntity implements Serializable {
 
     @Column(name = "LOGOUT_AT")
     private ZonedDateTime logoutAt;
-
-    @Column(name = "LAST_LOGIN_AT")
-    private ZonedDateTime lastLoginAt;
-
 
     public long getId() {
         return id;
@@ -96,14 +92,6 @@ public class UserAuthTokenEntity implements Serializable {
 
     public void setLogoutAt(ZonedDateTime logoutAt) {
         this.logoutAt = logoutAt;
-    }
-
-    public ZonedDateTime getLastLoginAt() {
-        return lastLoginAt;
-    }
-
-    public void setLastLoginAt(ZonedDateTime lastLoginAt) {
-        this.lastLoginAt = lastLoginAt;
     }
 
     @Override

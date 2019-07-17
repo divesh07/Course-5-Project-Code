@@ -9,10 +9,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "USERS", schema = "discussionForum")
+@Table(name = "USERS" ,schema = "public")
 @NamedQueries({
         @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.emailAddress = :emailAddress"),
         @NamedQuery(name = "userByName", query = "select u from UserEntity u where u.userName = :userName"),
@@ -33,7 +32,7 @@ public class UserEntity implements Serializable {
     @Column(name = "ROLE")
     private String role;
 
-    @Column(name = "EMAIL_ADDRESS")
+    @Column(name = "EMAIL")
     @NotNull
     @Size(max = 200)
     private String emailAddress;
@@ -41,22 +40,22 @@ public class UserEntity implements Serializable {
     @Column(name = "PASSWORD")
     private String password;
 
-    @Column(name = "FIRST_NAME")
+    @Column(name = "FIRSTNAME")
     @NotNull
     @Size(max = 200)
     private String firstName;
 
-    @Column(name = "LAST_NAME")
+    @Column(name = "LASTNAME")
     @NotNull
     @Size(max = 200)
     private String lastName;
 
-    @Column(name = "USER_NAME")
+    @Column(name = "USERNAME")
     @NotNull
     @Size(max = 200)
     private String userName;
 
-    @Column(name = "CONTACT_NUMBER")
+    @Column(name = "CONTACTNUMBER")
     @NotNull
     @Size(max = 50)
     private String contactNumber;
@@ -66,7 +65,7 @@ public class UserEntity implements Serializable {
     @Size(max = 200)
     private String country;
 
-    @Column(name = "ABOUT_ME")
+    @Column(name = "ABOUTME")
     @NotNull
     @Size(max = 200)
     private String aboutMe;
