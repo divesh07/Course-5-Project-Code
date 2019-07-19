@@ -1,5 +1,6 @@
 package com.upgrad.quora.service.business;
 
+import com.upgrad.quora.service.dao.UserAuthTokenDao;
 import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
@@ -17,10 +18,13 @@ public class AdminService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private UserAuthTokenDao userAuthTokenDao;
+
     @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity userDelete(final String userUuid, final String authorization) throws AuthorizationFailedException, UserNotFoundException, DeleteFailedException {
 
-        UserAuthTokenEntity userAuthTokenEntity = userDao.getUserAuthToken(authorization);
+        UserAuthTokenEntity userAuthTokenEntity = userAuthTokenDao.getUserAuthToken(authorization);
 
         if (userAuthTokenEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "User has not Signed in.");
