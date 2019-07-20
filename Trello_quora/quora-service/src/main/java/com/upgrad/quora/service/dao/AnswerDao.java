@@ -20,4 +20,16 @@ public class AnswerDao {
         return answerEntity;
     }
 
+    public AnswerEntity editAnswer(final AnswerEntity answerEntity){
+        return entityManager.merge(answerEntity);
+    }
+
+    public AnswerEntity getAnswer(final String uuid){
+        try {
+            return entityManager.createNamedQuery("answerById", AnswerEntity.class).setParameter("uuid", uuid).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+
 }
