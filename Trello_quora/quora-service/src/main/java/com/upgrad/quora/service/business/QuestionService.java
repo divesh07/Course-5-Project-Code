@@ -24,7 +24,7 @@ public class QuestionService {
     @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity getQuestion(final String questionUuid) throws InvalidQuestionException {
 
-        QuestionEntity question = questionDao.getQuestionById(questionUuid);
+        QuestionEntity question = questionDao.getQuestion(questionUuid);
         if ( question == null){
             throw new InvalidQuestionException("QUES-001","The question entered is invalid");
         }
