@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
+
 @Service
 public class AnswerService {
 
@@ -25,6 +27,9 @@ public class AnswerService {
 
     @Autowired
     private AnswerDao answerDao;
+
+    @Autowired
+    private CommonBusinessService commonBusinessService;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public UserAuthTokenEntity authorize(final String authorization) throws AuthorizationFailedException {
@@ -36,7 +41,7 @@ public class AnswerService {
         }
 
         // Check the user log out time , if the value is not null then the user has signed out
-        if ( userAuthTokenEntity.getLoginAt() !=null && userAuthTokenEntity.getLogoutAt() != null){
+        if ( userAuthTokenEntity.getLoginAt() != null && userAuthTokenEntity.getLogoutAt() != null){
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to post an answer");
         }
         return userAuthTokenEntity;
@@ -45,6 +50,45 @@ public class AnswerService {
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity postAnswer(final AnswerEntity answerEntity)  {
         return answerDao.postAnswer(answerEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public AnswerEntity editAnswerContent(final String authorization,final String answerId,final String answer) throws AuthorizationFailedException,InvalidQuestionException{
+        AnswerEntity answerEntity = getAnswer( authorization, answerId, "edit");
+        answerEntity.setAns(answer);
+        return answerDao.editAnswer(answerEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public AnswerEntity getAnswer(final String authorization,final String answerId, String type) throws AuthorizationFailedException,InvalidQuestionException{
+        UserAuthTokenEntity userAuthTokenEntity = commonBusinessService.getUser(authorization);
+        if(userAuthTokenEntity==null){
+            throw new AuthorizationFailedException("ATHR-001","User has not signed in");
+        }else {
+            ZonedDateTime expiryTime=userAuthTokenEntity.getExpiresAt();
+            ZonedDateTime logoutTime=userAuthTokenEntity.getLogoutAt();
+            ZonedDateTime nowTime=ZonedDateTime.now();
+            if(nowTime.compareTo(expiryTime)>0)
+                throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to edit an answer");
+            if(logoutTime!=null){
+                if(nowTime.compareTo(logoutTime)>0)
+                    throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to edit an answer");
+            }
+            AnswerEntity answerEntity = answerDao.getAnswer(answerId);
+            if(answerEntity!=null) {
+                UserEntity signedUser = userAuthTokenEntity.getUser();
+                UserEntity owner = answerEntity.getUser();
+                if (!owner.getUuid().equals(signedUser.getUuid())) {
+                    if(type.equals("delete"))
+                        throw new AuthorizationFailedException("ATHR-003","Only the answer owner or admin can delete the answer");
+                    else
+                        throw new AuthorizationFailedException("ATHR-003","Only the answer owner can edit the answer");
+                }
+                return answerEntity;
+            }else
+                throw new InvalidQuestionException("ANS-001","Entered answer uuid does not exist");
+        }
+
     }
 
 }
