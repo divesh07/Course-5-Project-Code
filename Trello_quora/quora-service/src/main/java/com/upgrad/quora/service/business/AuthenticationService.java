@@ -26,17 +26,20 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public UserAuthTokenEntity authenticate(final String username, final String password) throws AuthenticationFailedException {
-        UserEntity userEntity = userDao.getUserByEmail(username);
+        UserEntity userEntity = userDao.getUserByName(username);
         if (userEntity == null) {
             throw new AuthenticationFailedException("ATH-001", "This username does not exist");
         }
 
         final String encryptedPassword = CryptographyProvider.encrypt(password, userEntity.getSalt());
-        if (encryptedPassword.equals(userEntity.getPassword())) {
+        final String userPassEnc = CryptographyProvider.encrypt(userEntity.getPassword(), userEntity.getSalt());
+        if (encryptedPassword.equals(userPassEnc)) {
             JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(encryptedPassword);
             UserAuthTokenEntity userAuthTokenEntity = new UserAuthTokenEntity();
             userAuthTokenEntity.setUser(userEntity);
+            userAuthTokenEntity.setUuid(userEntity.getUuid());
             final ZonedDateTime now = ZonedDateTime.now();
+
             final ZonedDateTime expiresAt = now.plusHours(8);
 
             userAuthTokenEntity.setAccessToken(jwtTokenProvider.generateToken(userEntity.getUuid(), now, expiresAt));
