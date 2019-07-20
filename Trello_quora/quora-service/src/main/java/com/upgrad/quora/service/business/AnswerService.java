@@ -60,7 +60,13 @@ public class AnswerService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public AnswerEntity getAnswer(final String authorization,final String answerId, String type) throws AuthorizationFailedException,InvalidQuestionException{
+    public AnswerEntity deleteAnswer(final String authorization,final String answerId) throws AuthorizationFailedException, InvalidQuestionException{
+        AnswerEntity answerEntity = getAnswer( authorization, answerId,"delete");
+        return answerDao.deleteAnswer(answerEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public AnswerEntity getAnswer(final String authorization,final String answerId, String type) throws AuthorizationFailedException, InvalidQuestionException{
         UserAuthTokenEntity userAuthTokenEntity = commonBusinessService.getUser(authorization);
         if(userAuthTokenEntity==null){
             throw new AuthorizationFailedException("ATHR-001","User has not signed in");
@@ -78,7 +84,7 @@ public class AnswerService {
             if(answerEntity!=null) {
                 UserEntity signedUser = userAuthTokenEntity.getUser();
                 UserEntity owner = answerEntity.getUser();
-                if (!owner.getUuid().equals(signedUser.getUuid())) {
+                if (!owner.getUuid().equals(signedUser.getUuid()) && signedUser.getRole() != "admin") {
                     if(type.equals("delete"))
                         throw new AuthorizationFailedException("ATHR-003","Only the answer owner or admin can delete the answer");
                     else
