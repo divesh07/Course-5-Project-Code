@@ -46,6 +46,7 @@ public class UserController {
 
         final UserEntity userEntity = new UserEntity();
         userEntity.setUuid(UUID.randomUUID().toString());
+        userEntity.setUserName(signupUserRequest.getUserName());
         userEntity.setFirstName(signupUserRequest.getFirstName());
         userEntity.setLastName(signupUserRequest.getLastName());
         userEntity.setEmailAddress(signupUserRequest.getEmailAddress());
@@ -54,7 +55,6 @@ public class UserController {
         userEntity.setAboutMe(signupUserRequest.getAboutMe());
         userEntity.setDob(signupUserRequest.getDob());
         userEntity.setContactNumber(signupUserRequest.getContactNumber());
-        userEntity.setSalt("1234abc");
         userEntity.setRole("nonadmin");
 
         final UserEntity createdUserEntity = signupBusinessService.signup(userEntity);

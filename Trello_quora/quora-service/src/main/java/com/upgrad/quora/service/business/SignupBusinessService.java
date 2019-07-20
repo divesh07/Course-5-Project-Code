@@ -33,8 +33,8 @@ public class SignupBusinessService {
     @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity getUserByName(final String username) throws SignUpRestrictedException {
         UserEntity userEntity = userDao.getUserByName(username);
-        if (userEntity == null) {
-            throw new SignUpRestrictedException("SGR-001", "'Try any other Username, this Username has already been taken.'");
+        if (userEntity != null) {
+            throw new SignUpRestrictedException("SGR-001", "Try any other Username, this Username has already been taken");
         }
         return userEntity;
     }
@@ -42,8 +42,8 @@ public class SignupBusinessService {
     @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity getUserByEmail(final String emailAddress) throws SignUpRestrictedException {
         UserEntity userEntity = userDao.getUserByEmail(emailAddress);
-        if (userEntity == null) {
-            throw new SignUpRestrictedException("SGR-002", "'This user has already been registered, try with any other emailId.'");
+        if (userEntity != null) {
+            throw new SignUpRestrictedException("SGR-002", "This user has already been registered, try with any other emailId");
         }
         return userEntity;
     }
