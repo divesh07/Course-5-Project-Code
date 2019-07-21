@@ -13,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,14 +34,10 @@ public class QuestionController {
     }
 
     @RequestMapping(method = RequestMethod.GET,path = "/question/all",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<List<QuestionDetailsResponse>> getAllQuestions(@RequestHeader("authorization")final String authorization) throws AuthorizationFailedException{
-        List<QuestionEntity> questionEntities=questionBusinessService.getAllQuestions(authorization);
-        List<QuestionDetailsResponse> questionDetailsResponseList=new ArrayList<QuestionDetailsResponse>();
-        for(int i=0;i<questionEntities.size();i++){
-            QuestionEntity questionEntity=questionEntities.get(i);
-            questionDetailsResponseList.add(new QuestionDetailsResponse().content(questionEntity.getContent()).id(questionEntity.getUuid()));
-        }
-        return new ResponseEntity<List<QuestionDetailsResponse>>(questionDetailsResponseList,HttpStatus.OK);
+    public ResponseEntity<QuestionDetailsResponse> getAllQuestions(@RequestHeader("authorization")final String authorization) throws AuthorizationFailedException{
+        QuestionEntity questionEntity=questionBusinessService.getAllQuestions(authorization);
+        final QuestionDetailsResponse questionDetailsResponse=new QuestionDetailsResponse().content(questionEntity.getContent()).id(questionEntity.getUuid());
+        return new ResponseEntity<QuestionDetailsResponse>(questionDetailsResponse,HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.PUT,path = "/question/edit/{questionId}",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -62,13 +56,9 @@ public class QuestionController {
     }
 
     @RequestMapping(method = RequestMethod.GET,path = "/question/all/{userId}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<List<QuestionDetailsResponse>> getAllQuestionsByUser(@RequestHeader("authorization")final String authorization, @PathVariable("userId")final String userId) throws AuthorizationFailedException, UserNotFoundException {
-        List<QuestionEntity> questionEntities=questionBusinessService.getAllQuestionsByUser(authorization,userId);
-        List<QuestionDetailsResponse> questionDetailsResponseList=new ArrayList<QuestionDetailsResponse>();
-        for(int i=0;i<questionEntities.size();i++){
-            QuestionEntity questionEntity=questionEntities.get(i);
-            questionDetailsResponseList.add(new QuestionDetailsResponse().content(questionEntity.getContent()).id(questionEntity.getUuid()));
-        }
-        return new ResponseEntity<List<QuestionDetailsResponse>>(questionDetailsResponseList,HttpStatus.OK);
+    public ResponseEntity<QuestionDetailsResponse> getAllQuestionsByUser(@RequestHeader("authorization")final String authorization, @PathVariable("userId")final String userId) throws AuthorizationFailedException, UserNotFoundException {
+        QuestionEntity questionEntity=questionBusinessService.getAllQuestionsByUser(authorization,userId);
+        final QuestionDetailsResponse questionDetailsResponse=new QuestionDetailsResponse().id(questionEntity.getUuid()).content(questionEntity.getContent());
+        return new ResponseEntity<QuestionDetailsResponse>(questionDetailsResponse,HttpStatus.OK);
     }
 }

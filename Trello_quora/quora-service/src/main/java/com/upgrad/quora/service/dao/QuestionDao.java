@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 @Repository
 public class QuestionDao {
@@ -19,17 +18,9 @@ public class QuestionDao {
         return questionEntity;
     }
 
-    public List<QuestionEntity> getAllQuestions(){
+    public QuestionEntity getAllQuestions(final UserEntity userEntity){
         try {
-            return entityManager.createNamedQuery("questionsAll", QuestionEntity.class).getResultList();
-        } catch (NoResultException nre) {
-            return null;
-        }
-    }
-
-    public List<QuestionEntity> getAllQuestionsByUser(final UserEntity userEntity){
-        try {
-            return entityManager.createNamedQuery("questionsByUserId", QuestionEntity.class).setParameter("user",userEntity).getResultList();
+            return entityManager.createNamedQuery("questionByUserId", QuestionEntity.class).setParameter("user", userEntity).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         }

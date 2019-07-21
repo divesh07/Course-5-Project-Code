@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 /Users/rohitshinde/My Files/Upgrad/Code/Assignment 5/Git/Course-5-Project-Code/Trello_quora/quora-api/src/test/java/com/upgrad/quora/api/controller/AnswerControllerTest.java
 /Users/rohitshinde/My Files/Upgrad/Code/Assignment 5/Git/Course-5-Project-Code/Trello_quora/quora-api/src/test/java/com/upgrad/quora/api/controller/QuestionControllerTest.java
 /Users/rohitshinde/My Files/Upgrad/Code/Assignment 5/Git/Course-5-Project-Code/Trello_quora/quora-api/src/test/java/com/upgrad/quora/api/controller/UserControllerTest.java
 /Users/rohitshinde/My Files/Upgrad/Code/Assignment 5/Git/Course-5-Project-Code/Trello_quora/quora-api/src/test/java/com/upgrad/quora/api/controller/CommonControllerTest.java
 /Users/rohitshinde/My Files/Upgrad/Code/Assignment 5/Git/Course-5-Project-Code/Trello_quora/quora-api/src/test/java/com/upgrad/quora/api/controller/AdminControllerTest.java
+=======
+C:\trunk\Trello_quora\Course-5-Project-Code\Trello_quora\quora-api\src\test\java\com\upgrad\quora\api\controller\UserControllerTest.java
+C:\trunk\Trello_quora\Course-5-Project-Code\Trello_quora\quora-api\src\test\java\com\upgrad\quora\api\controller\AnswerControllerTest.java
+C:\trunk\Trello_quora\Course-5-Project-Code\Trello_quora\quora-api\src\test\java\com\upgrad\quora\api\controller\AdminControllerTest.java
+C:\trunk\Trello_quora\Course-5-Project-Code\Trello_quora\quora-api\src\test\java\com\upgrad\quora\api\controller\QuestionControllerTest.java
+C:\trunk\Trello_quora\Course-5-Project-Code\Trello_quora\quora-api\src\test\java\com\upgrad\quora\api\controller\CommonControllerTest.java
+>>>>>>> Endpoint3
