@@ -31,23 +31,23 @@ public class AdminService {
         }
 
         // Check the user log out time , if the value is not null then the user has signed out
-        if (userAuthTokenEntity.getLogoutAt() != null){
+        if (userAuthTokenEntity.getLogoutAt() != null) {
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.");
         }
 
         String role = userAuthTokenEntity.getUser().getRole();
-        if ( role.equalsIgnoreCase("nonadmin")){
+        if (role.equalsIgnoreCase("nonadmin")) {
             throw new AuthorizationFailedException("ATHR-003", "Unauthorized Access, Entered user is not an admin");
         }
 
         UserEntity userEntity = userDao.getUserById(userUuid);
-        if ( null == userEntity){
-            throw new UserNotFoundException("USR-001","User with entered uuid to be deleted does not exist");
+        if (null == userEntity) {
+            throw new UserNotFoundException("USR-001", "User with entered uuid to be deleted does not exist");
         }
 
         userEntity = userDao.deleteUserById(userUuid);
-        if ( null == userEntity){
-            throw new DeleteFailedException("DEL-001","Failed to delete user");
+        if (null == userEntity) {
+            throw new DeleteFailedException("DEL-001", "Failed to delete user");
         }
 
         return userEntity;
