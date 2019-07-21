@@ -44,6 +44,8 @@ public class AnswerService {
         if ( userAuthTokenEntity.getLoginAt() != null && userAuthTokenEntity.getLogoutAt() != null){
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to post an answer");
         }
+
+
         return userAuthTokenEntity;
     }
 
