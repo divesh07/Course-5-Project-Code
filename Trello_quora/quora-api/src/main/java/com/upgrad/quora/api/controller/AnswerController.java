@@ -45,7 +45,6 @@ public class AnswerController {
         answerEntity = answerService.postAnswer(answerEntity);
 
         AnswerResponse answerResponse = new AnswerResponse().id(answerEntity.getUuid()).status("ANSWER CREATED");
-
         return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.CREATED);
     }
 }
