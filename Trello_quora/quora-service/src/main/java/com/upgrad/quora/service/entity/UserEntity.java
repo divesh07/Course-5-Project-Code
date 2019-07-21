@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "USERS" ,schema = "public")
 @NamedQueries({
-        @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.emailAddress = :emailAddress"),
+        @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.email = :email"),
         @NamedQuery(name = "userByName", query = "select u from UserEntity u where u.userName = :userName"),
         @NamedQuery(name = "userById", query = "select u from UserEntity u where u.uuid = :uuid"),
         @NamedQuery(name = "deleteUserById", query = "delete from UserEntity u where u.uuid = :uuid")
@@ -36,7 +36,7 @@ public class UserEntity implements Serializable {
     @Column(name = "EMAIL")
     @NotNull
     @Size(max = 50)
-    private String emailAddress;
+    private String email;
 
     @Column(name = "PASSWORD")
     @Size(max = 255)
@@ -163,11 +163,11 @@ public class UserEntity implements Serializable {
     }
 
     public String getEmailAddress() {
-        return emailAddress;
+        return email;
     }
 
     public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+        this.email = emailAddress;
     }
 
     public String getUserName() {

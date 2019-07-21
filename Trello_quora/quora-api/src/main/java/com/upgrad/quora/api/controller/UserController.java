@@ -64,19 +64,24 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/user/signin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SigninResponse> userSignin(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
-        String encodedText = authorization.split("Basic ")[1];
-        byte[] decode = Base64.getDecoder().decode(encodedText);
-        String decodedText = new String(decode);
-        String[] decodedArray = decodedText.split(":");
+        try {
+            String encodedText = authorization.split("Basic ")[1];
+            byte[] decode = Base64.getDecoder().decode(encodedText);
+            String decodedText = new String(decode);
+            String[] decodedArray = decodedText.split(":");
 
-        UserAuthTokenEntity userAuthToken = authenticationService.authenticate(decodedArray[0], decodedArray[1]);
-        UserEntity user = userAuthToken.getUser();
+            UserAuthTokenEntity userAuthToken = authenticationService.authenticate(decodedArray[0], decodedArray[1]);
+            UserEntity user = userAuthToken.getUser();
 
-        SigninResponse signinResponse = new SigninResponse().id(user.getUuid())
-                .message("SIGNED IN SUCCESSFULLY");
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("access-token", userAuthToken.getAccessToken());
-        return new ResponseEntity<SigninResponse>(signinResponse, headers, HttpStatus.OK);
+            SigninResponse signinResponse = new SigninResponse().id(user.getUuid())
+                    .message("SIGNED IN SUCCESSFULLY");
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("access-token", userAuthToken.getAccessToken());
+            return new ResponseEntity<SigninResponse>(signinResponse, headers, HttpStatus.OK);
+        } catch (ArrayIndexOutOfBoundsException ofb) {
+            System.out.println("Caught out of bound exception , Please try again");
+            return null;
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

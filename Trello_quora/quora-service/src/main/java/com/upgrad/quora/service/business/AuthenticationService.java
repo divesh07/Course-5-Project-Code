@@ -26,14 +26,14 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public UserAuthTokenEntity authenticate(final String username, final String password) throws AuthenticationFailedException {
-        UserEntity userEntity = userDao.getUserByName(username);
+        UserEntity userEntity = userDao.getUserByEmail(username);
         if (userEntity == null) {
             throw new AuthenticationFailedException("ATH-001", "This username does not exist");
         }
 
         final String encryptedPassword = CryptographyProvider.encrypt(password, userEntity.getSalt());
-        final String userPassEnc = CryptographyProvider.encrypt(userEntity.getPassword(), userEntity.getSalt());
-        if (encryptedPassword.equals(userPassEnc)) {
+        //final String userPassEnc = CryptographyProvider.encrypt(userEntity.getPassword(), userEntity.getSalt());
+        if (encryptedPassword.equals(userEntity.getPassword())) {
             JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(encryptedPassword);
             UserAuthTokenEntity userAuthTokenEntity = new UserAuthTokenEntity();
             userAuthTokenEntity.setUser(userEntity);
