@@ -23,10 +23,20 @@ public class QuestionService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity getQuestion(final String questionUuid) throws InvalidQuestionException {
+        final QuestionEntity question = validateQuestion(questionUuid, "The question entered is invalid");
+        return question;
+    }
 
+    @Transactional(propagation = Propagation.REQUIRED)
+    public QuestionEntity validate(final String questionUuid) throws InvalidQuestionException {
+        final QuestionEntity question = validateQuestion(questionUuid, "The question with entered uuid whose details are to be seen does not exist");
+        return question;
+    }
+
+    public QuestionEntity validateQuestion(final String questionUuid, final String errorMessage) throws InvalidQuestionException {
         QuestionEntity question = questionDao.getQuestion(questionUuid);
         if ( question == null){
-            throw new InvalidQuestionException("QUES-001","The question entered is invalid");
+            throw new InvalidQuestionException("QUES-001",errorMessage);
         }
         return question;
     }
