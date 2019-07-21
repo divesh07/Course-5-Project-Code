@@ -67,7 +67,6 @@ public class QuestionBusinessService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-
     public List<QuestionEntity> getAllQuestionsByUser(final String authorization,final String userId) throws AuthorizationFailedException,UserNotFoundException{
         UserAuthTokenEntity userAuthTokenEntity=commonBusinessService.getUser(authorization);
         if(userAuthTokenEntity==null){
