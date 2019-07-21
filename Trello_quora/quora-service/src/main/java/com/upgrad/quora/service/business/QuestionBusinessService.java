@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 
 @Service
@@ -46,7 +47,7 @@ public class QuestionBusinessService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public QuestionEntity getAllQuestions(final String authorization) throws AuthorizationFailedException{
+    public List<QuestionEntity> getAllQuestions(final String authorization) throws AuthorizationFailedException{
         UserAuthTokenEntity userAuthTokenEntity=commonBusinessService.getUser(authorization);
         if(userAuthTokenEntity==null){
             throw new AuthorizationFailedException("ATHR-001","User has not signed in");
@@ -60,13 +61,13 @@ public class QuestionBusinessService {
                 if(nowTime.compareTo(logoutTime)>0)
                     throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to get all questions");
             }
-            return questionDao.getAllQuestions(userAuthTokenEntity.getUser());
+            return questionDao.getAllQuestions();
         }
 
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public QuestionEntity getAllQuestionsByUser(final String authorization,final String userId) throws AuthorizationFailedException,UserNotFoundException{
+    public List<QuestionEntity> getAllQuestionsByUser(final String authorization,final String userId) throws AuthorizationFailedException,UserNotFoundException{
         UserAuthTokenEntity userAuthTokenEntity=commonBusinessService.getUser(authorization);
         if(userAuthTokenEntity==null){
             throw new AuthorizationFailedException("ATHR-001","User has not signed in");
@@ -81,10 +82,10 @@ public class QuestionBusinessService {
                     throw new AuthorizationFailedException("ATHR-002","User is signed out.Sign in first to get all questions posted by a specific users");
             }
             UserEntity userEntity=userAuthTokenEntity.getUser();
-            QuestionEntity questionEntity=questionDao.getAllQuestions(userAuthTokenEntity.getUser());
-            if(questionEntity!=null) {
+            List<QuestionEntity> questionEntities=questionDao.getAllQuestionsByUser(userAuthTokenEntity.getUser());
+            if(questionEntities!=null) {
                 if (userEntity.getUuid().equals(userId))
-                    return questionEntity;
+                    return questionEntities;
                 else
                     throw new UserNotFoundException("USR-001", "User with entered uuid whose question details are to be seen does not exist");
             }else
@@ -137,5 +138,24 @@ public class QuestionBusinessService {
 
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
+    public QuestionEntity getQuestion(final String questionUuid) throws InvalidQuestionException {
+        final QuestionEntity question = validateQuestion(questionUuid, "The question entered is invalid");
+        return question;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public QuestionEntity validate(final String questionUuid) throws InvalidQuestionException {
+        final QuestionEntity question = validateQuestion(questionUuid, "The question with entered uuid whose details are to be seen does not exist");
+        return question;
+    }
+
+    public QuestionEntity validateQuestion(final String questionUuid, final String errorMessage) throws InvalidQuestionException {
+        QuestionEntity question = questionDao.getQuestion(questionUuid);
+        if ( question == null){
+            throw new InvalidQuestionException("QUES-001",errorMessage);
+        }
+        return question;
+    }
 
 }
