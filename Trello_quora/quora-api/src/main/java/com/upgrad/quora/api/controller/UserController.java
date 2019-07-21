@@ -38,6 +38,13 @@ public class UserController {
     @Autowired
     private SignOutBusinessService signOutBusinessService;
 
+    /**
+     * Register User with parameters passed in the SignupUserRequest
+     *
+     * @param signupUserRequest
+     * @return
+     * @throws SignUpRestrictedException
+     */
     @RequestMapping(method = RequestMethod.POST, path = "/user/signup", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignupUserResponse> userSignup(final SignupUserRequest signupUserRequest) throws SignUpRestrictedException {
 
@@ -62,6 +69,13 @@ public class UserController {
         return new ResponseEntity<SignupUserResponse>(userResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Sign in User with the authorization token in format Basic Base64encoded(email:password)
+     *
+     * @param authorization
+     * @return
+     * @throws AuthenticationFailedException
+     */
     @RequestMapping(method = RequestMethod.POST, path = "/user/signin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SigninResponse> userSignin(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
         try {
@@ -84,7 +98,14 @@ public class UserController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/user/signout",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    /**
+     * Sign out the loged in user provided the authorization token
+     *
+     * @param authorization
+     * @return
+     * @throws SignOutRestrictedException
+     */
+    @RequestMapping(method = RequestMethod.POST, path = "/user/signout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignoutResponse> userSignout(@RequestHeader("authorization") final String authorization) throws SignOutRestrictedException {
         UserAuthTokenEntity userAuthToken = signOutBusinessService.signout(authorization);
         UserEntity user = userAuthToken.getUser();

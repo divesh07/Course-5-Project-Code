@@ -18,6 +18,15 @@ public class CommonController {
     @Autowired
     private CommonBusinessService commonBusinessService;
 
+    /**
+     * Get the user profile given its Id , along with JWT aceess token
+     *
+     * @param userUuid
+     * @param authorization
+     * @return
+     * @throws AuthorizationFailedException
+     * @throws UserNotFoundException
+     */
     @RequestMapping(method = RequestMethod.GET, path = "/userprofile/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<UserDetailsResponse> getUserProfile(@PathVariable("userId") final String userUuid, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, UserNotFoundException {
 
