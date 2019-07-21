@@ -2,11 +2,10 @@ package com.upgrad.quora.api.controller;
 
 import com.upgrad.quora.api.model.*;
 import com.upgrad.quora.service.business.AnswerService;
-import com.upgrad.quora.service.business.QuestionService;
+import com.upgrad.quora.service.business.QuestionBusinessService;
 import com.upgrad.quora.service.entity.AnswerEntity;
 import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
-import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class AnswerController {
     private AnswerService answerService;
 
     @Autowired
-    private QuestionService questionService;
+    private QuestionBusinessService questionBusinessService;
 
     @RequestMapping(method = RequestMethod.POST, path = "/question/{questionId}/answer/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AnswerResponse> createAnswer(@PathVariable("questionId") final String questionId,
@@ -36,7 +35,7 @@ public class AnswerController {
                                                        final AnswerRequest answerRequest)
             throws AuthorizationFailedException, InvalidQuestionException {
 
-        QuestionEntity question = questionService.getQuestion(questionId);
+        QuestionEntity question = questionBusinessService.getQuestion(questionId);
         UserAuthTokenEntity userAuthToken = answerService.authorize(authorization);
 
         AnswerEntity answerEntity = new AnswerEntity();
@@ -76,7 +75,7 @@ public class AnswerController {
     public List<ResponseEntity<AnswerDetailsResponse>> getAnswersToQuestions(@PathVariable("questionId") final String questionId,
                                                                     @RequestHeader("authorization") final String authorization)
             throws AuthorizationFailedException, InvalidQuestionException {
-        QuestionEntity question = questionService.validate(questionId);
+        QuestionEntity question = questionBusinessService.validate(questionId);
         List<AnswerEntity> answers = answerService.getAnswersToQuestion(authorization,questionId);
 
         List<ResponseEntity<AnswerDetailsResponse>> answerDetailsResponses = new ArrayList<>();

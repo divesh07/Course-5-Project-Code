@@ -1,7 +1,6 @@
 package io.swagger.api;
 
-
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-07-21T09:40:04.173+05:30")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-07-21T12:49:54.471+05:30")
 
 public class NotFoundException extends ApiException {
     private int code;
