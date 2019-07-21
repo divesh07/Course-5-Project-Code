@@ -45,11 +45,6 @@ public class AdminService {
             throw new UserNotFoundException("USR-001", "User with entered uuid to be deleted does not exist");
         }
 
-        userEntity = userDao.deleteUserById(userUuid);
-        if (null == userEntity) {
-            throw new DeleteFailedException("DEL-001", "Failed to delete user");
-        }
-
-        return userEntity;
+        return userDao.deleteUser(userEntity);
     }
 }

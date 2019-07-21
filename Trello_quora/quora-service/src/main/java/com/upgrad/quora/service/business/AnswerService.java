@@ -3,6 +3,7 @@ package com.upgrad.quora.service.business;
 import com.upgrad.quora.service.dao.AnswerDao;
 import com.upgrad.quora.service.dao.UserAuthTokenDao;
 import com.upgrad.quora.service.entity.AnswerEntity;
+import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
@@ -49,10 +50,10 @@ public class AnswerService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<AnswerEntity> getAnswersToQuestion(final String authorization, final String questionId) throws AuthorizationFailedException {
+    public List<AnswerEntity> getAnswersToQuestion(final String authorization, final QuestionEntity question) throws AuthorizationFailedException {
         UserAuthTokenEntity userAuthTokenEntity = userAuthTokenDao.getUserAuthToken(authorization);
         userAuthTokenEntity = validateUserSignOut(userAuthTokenEntity, "User is signed out.Sign in first to get the answers");
-        return answerDao.getAllAnswers(questionId);
+        return answerDao.getAllAnswers(question);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
