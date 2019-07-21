@@ -29,22 +29,22 @@ public class CommonBusinessService {
         }
 
         // Check the user log out time , if the value is not null then the user has signed out
-        if (userAuthTokenEntity.getLogoutAt() != null){
+        if (userAuthTokenEntity.getLogoutAt() != null) {
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details.");
         }
 
         UserEntity userEntity = userDao.getUserById(userUuid);
 
-        if ( null == userEntity){
-            throw new UserNotFoundException("USR-001","User with entered uuid does not exist");
+        if (null == userEntity) {
+            throw new UserNotFoundException("USR-001", "User with entered uuid does not exist");
         }
 
         return userEntity;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public UserAuthTokenEntity getUser(final String authorization){
-        UserAuthTokenEntity userAuthTokenEntity=userAuthTokenDao.getUserAuthToken(authorization);
+    public UserAuthTokenEntity getUser(final String authorization) {
+        UserAuthTokenEntity userAuthTokenEntity = userAuthTokenDao.getUserAuthToken(authorization);
         return userAuthTokenEntity;
     }
 
